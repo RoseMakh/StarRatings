@@ -1,0 +1,35 @@
+:root {
+  /*color variables EXAMPLE*/
+  --clr-primary-200: #000000;
+
+  /*font variables EXAMPLE*/
+  --ff-primary: sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.star {
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  display: inline-block;
+}
+
+.starYellow {
+  background-color: goldenrod;
+}
+
+#starBar {
+  width: max-content;
+  margin: 50px 50px;
+  display: flex;
+  flex-direction: row;
+}
