@@ -27,9 +27,12 @@
   background-color: goldenrod;
 }
 
-#starBar {
-  width: max-content;
+section {
   margin: 50px 50px;
+}
+
+.starBar {
+  width: max-content;
   display: flex;
   flex-direction: row;
 }

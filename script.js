@@ -1,50 +1,69 @@
 const cc = console.log;
 
-const starBar = document.getElementById("starBar");
+//variables not related to users
 
-let currentStarId = "";
-let userStarRating = 0;
-let starArray = [];
+let barTypesAll = ["Full", "Half"];
 
-//add stars to starBar
-//later, turn this into function that accepts parent and number of stars so it dynamically makes star rating bars with different number of stars in it
+//variables for individual starBars, allows for accessing them dynamically
+let barVars = {
+  getStarBar: {
+    Full: document.getElementById("starBarFull"),
+    Half: document.getElementById("starBarHalf"),
+  },
+  getStarRatingText: {
+    Full: document.getElementById("starRatingTextFull"),
+    Half: document.getElementById("starRatingTextHalf"),
+  },
+  currentStarId: {
+    Full: "",
+    Half: "",
+  },
+  userStarRating: {
+    Full: 0,
+    Half: 0,
+  },
+  starArray: {
+    Full: [],
+    Half: [],
+  },
+};
 
-for (i = 1; i <= 10; i++) {
-  let newStar = document.createElement("DIV");
-  newStar.classList.add("star");
-  starBar.append(newStar);
-  newStar.setAttribute("id", "star" + i);
-  starArray.push(newStar.id);
-  newStar.addEventListener("mouseenter", function (e) {
-    starMouseEnter(e);
-  });
-  newStar.addEventListener("click", function (e) {
-    starMouseClick(e);
-  });
-  // newStar.addEventListener("mouseleave", function (e) {
-  //     starMouseLeave(e);
-  //   });
+///END OF VARIABLES SECTION
+
+function createStarsSingleUser(barType) {
+  let barTypelc = barType.toLowerCase();
+
+  for (i = 1; i <= 5; i++) {
+    let newStar = document.createElement("DIV");
+    newStar.classList.add("star");
+    barVars.getStarBar[barType].append(newStar);
+    newStar.setAttribute("id", `${barTypelc}-star${i}`);
+    barVars.starArray[barType].push(newStar.id);
+
+    newStar.addEventListener("mouseenter", (e) => starMouseEnter(e, barType));
+
+    newStar.addEventListener("click", (e) => starMouseClick(e, barType));
+  }
 }
+createStarsSingleUser("Full");
+createStarsSingleUser("Half");
 
-starBar.addEventListener("mouseleave", function (e) {
-  starMouseLeave(e);
+//ADD MOUSELEAVE TO ALL STARBARS
+barTypesAll.map((barType) => {
+  barVars.getStarBar[barType].addEventListener("mouseleave", () =>
+    starMouseLeave(barType)
+  );
 });
-//starBar.children[5].style.backgroundColor = "green";
 
-function starMouseEnter(e) {
+function starMouseEnter(e, barType) {
   let currentStarIndex = -1;
-  //cc(e.target);
-  // cc("testfunrunning");
-  // cc(`target id: ${e.target.id}`);
-  currentStarId = e.target.id;
-  currentStarIndex = starArray.indexOf(currentStarId);
-  // console.log("entered star ID:", currentStarId);
-  // cc(`currentstarindex: ${currentStarIndex}`);
 
-  starArray.map((s, i) => {
-    // cc("starArray is being mapped");
-    // cc(s);
-    // cc(i);
+  barVars.currentStarId[barType] = e.target.id;
+  currentStarIndex = barVars.starArray[barType].indexOf(
+    barVars.currentStarId[barType]
+  );
+
+  barVars.starArray[barType].map((s, i) => {
     if (i <= currentStarIndex) {
       document.getElementById(s).classList.add("starYellow");
     } else if (i > currentStarIndex) {
@@ -53,28 +72,22 @@ function starMouseEnter(e) {
   });
 }
 
-function starMouseLeave(e) {
-  // if (userStarRating === 0) {
-  //   starArray.map((s) => {
-  //     document.getElementById(s).classList.remove("starYellow");
-  //   });
-  // }
-
-  starArray.map((s, i) => {
-    // cc("starArray is being mapped");
-    // cc(s);
-    // cc(i);
-    if (i + 1 <= userStarRating) {
+function starMouseLeave(barType) {
+  barVars.starArray[barType].map((s, i) => {
+    if (i + 1 <= barVars.userStarRating[barType]) {
       document.getElementById(s).classList.add("starYellow");
-    } else if (i + 1 > userStarRating) {
+    } else if (i + 1 > barVars.userStarRating[barType]) {
       document.getElementById(s).classList.remove("starYellow");
     }
   });
 }
 
-function starMouseClick(e) {
-  userStarRating = starArray.indexOf(e.target.id) + 1;
-  cc("userstarrating:" + userStarRating);
+function starMouseClick(e, barType) {
+  barVars.userStarRating[barType] =
+    barVars.starArray[barType].indexOf(e.target.id) + 1;
+  barVars.getStarRatingText[barType].innerText =
+    barVars.userStarRating[barType];
+  cc([barType] + " UserStarRating:" + barVars.userStarRating[barType]);
 }
 
 //THE FOLLOWING FUNCTION JUST HOLDS CODE SNIPPETS FOR REFERENCE
@@ -82,11 +95,11 @@ function refref() {
   !getBtnFollow.contains(e.target) &&
     getBtnInstagram.classList.contains("animSlideReveal1");
 
-  //more ref
-
   if (e.target !== this) {
     // Get the ID of the clicked child element
     const childId = e.target.id;
     console.log("Clicked child ID:", childId);
   }
+
+  getStarBarFull.children[5].style.backgroundColor = "green";
 }
