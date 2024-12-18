@@ -21,10 +21,17 @@
   height: 20px;
   background-color: white;
   display: inline-block;
+  /* background-image: linear-gradient(90deg, goldenrod 50%, white 50%); */
 }
 
 .starYellow {
   background-color: goldenrod;
+}
+
+.starYellowHalf {
+  background-image: -moz-linear-gradient(90deg, goldenrod 50%, white 50%);
+  background-image: -webkit-linear-gradient(90deg, goldenrod 50%, white 50%);
+  background-image: linear-gradient(90deg, goldenrod 50%, white 50%);
 }
 
 section {
