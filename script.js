@@ -53,18 +53,23 @@ function createStarsSingleUser(barType) {
   let barTypelc = barType.toLowerCase();
 
   for (i = 1; i <= 5; i++) {
+    let newBtn = document.createElement("BUTTON");
+    newBtn.setAttribute("id", `${barTypelc}-star${i}`);
+
     let newStar = document.createElement("DIV");
     newStar.classList.add("star");
-    barVars.getStarBar[barType].append(newStar);
-    newStar.setAttribute("id", `${barTypelc}-star${i}`);
-    barVars.starArray[barType].push(newStar.id);
 
-    newStar.addEventListener("mouseenter", (e) => starMouseEnter(e, barType));
+    newBtn.append(newStar);
+    barVars.getStarBar[barType].append(newBtn);
 
-    newStar.addEventListener("click", (e) => starMouseClick(e, barType));
+    barVars.starArray[barType].push(newBtn.id);
+
+    newBtn.addEventListener("mouseenter", (e) => starMouseEnter(e, barType));
+
+    newBtn.addEventListener("click", (e) => starMouseClick(e, barType));
 
     if (barType !== "Full") {
-      newStar.addEventListener("mousemove", (e) => starMousemove(e, barType));
+      newBtn.addEventListener("mousemove", (e) => starMousemove(e, barType));
     }
   }
 }
@@ -89,15 +94,16 @@ function starMouseEnter(e, barType) {
 
   barVars.starArray[barType].map((s, i) => {
     if (barType === "Percent") {
-      document.getElementById(s).style.backgroundImage = "none";
+      //remove gradient from percent stars
+      document.getElementById(s).children[0].style.backgroundImage = "none";
     }
     if (barType === "Half") {
-      document.getElementById(s).classList.remove("starYellowHalf");
+      document.getElementById(s).children[0].classList.remove("starYellowHalf");
     }
     if (i < currentStarIndex) {
-      document.getElementById(s).classList.add("starYellow");
+      document.getElementById(s).children[0].classList.add("starYellow");
     } else if (i > currentStarIndex) {
-      document.getElementById(s).classList.remove("starYellow");
+      document.getElementById(s).children[0].classList.remove("starYellow");
     }
   });
 
@@ -105,7 +111,7 @@ function starMouseEnter(e, barType) {
     case "Full":
       document
         .getElementById(barVars.currentStarId[barType])
-        .classList.add("starYellow");
+        .children[0].classList.add("starYellow");
       break;
     case "Half":
       barVars.boundRect[barType].left = document
@@ -117,10 +123,10 @@ function starMouseEnter(e, barType) {
 
       document
         .getElementById(barVars.currentStarId[barType])
-        .classList.remove("starYellow");
+        .children[0].classList.remove("starYellow");
       document
         .getElementById(barVars.currentStarId[barType])
-        .classList.remove("starYellowHalf");
+        .children[0].classList.remove("starYellowHalf");
       break;
     case "Percent":
       barVars.boundRect[barType].left = document
@@ -132,7 +138,7 @@ function starMouseEnter(e, barType) {
 
       document
         .getElementById(barVars.currentStarId[barType])
-        .classList.remove("starYellow");
+        .children[0].classList.remove("starYellow");
       break;
   }
 }
@@ -146,17 +152,17 @@ function starMousemove(e, barType) {
       ) {
         document
           .getElementById(barVars.currentStarId[barType])
-          .classList.remove("starYellow");
+          .children[0].classList.remove("starYellow");
         document
           .getElementById(barVars.currentStarId[barType])
-          .classList.add("starYellowHalf");
+          .children[0].classList.add("starYellowHalf");
       } else {
         document
           .getElementById(barVars.currentStarId[barType])
-          .classList.remove("starYellowHalf");
+          .children[0].classList.remove("starYellowHalf");
         document
           .getElementById(barVars.currentStarId[barType])
-          .classList.add("starYellow");
+          .children[0].classList.add("starYellow");
       }
       break;
     case "Percent":
@@ -165,7 +171,7 @@ function starMousemove(e, barType) {
       cc(`${e.clientX - barVars.boundRect[barType].left}px`);
       document.getElementById(
         barVars.currentStarId[barType]
-      ).style.backgroundImage = `linear-gradient(90deg, goldenrod ${
+      ).children[0].style.backgroundImage = `linear-gradient(90deg, goldenrod ${
         e.clientX - barVars.boundRect[barType].left
       }px, white ${e.clientX - barVars.boundRect[barType].left}px`;
 
@@ -176,22 +182,22 @@ function starMousemove(e, barType) {
 function starMouseLeave(barType) {
   barVars.starArray[barType].map((s, i) => {
     if (barType === "Percent") {
-      document.getElementById(s).style.backgroundImage = "none";
+      document.getElementById(s).children[0].style.backgroundImage = "none";
     }
     if (barType === "Half") {
-      document.getElementById(s).classList.remove("starYellowHalf");
+      document.getElementById(s).children[0].classList.remove("starYellowHalf");
     }
 
-    document.getElementById(s).classList.remove("starYellow");
+    document.getElementById(s).children[0].classList.remove("starYellow");
 
     if (i + 1 < barVars.userStarRating[barType]) {
-      document.getElementById(s).classList.add("starYellow");
+      document.getElementById(s).children[0].classList.add("starYellow");
     }
     if (i + 1 === Math.ceil(barVars.userStarRating[barType])) {
       if (barType === "Half" && barVars.boundRect.Half.isHalf) {
-        document.getElementById(s).classList.add("starYellowHalf");
+        document.getElementById(s).children[0].classList.add("starYellowHalf");
       } else if (barType !== "Percent") {
-        document.getElementById(s).classList.add("starYellow");
+        document.getElementById(s).children[0].classList.add("starYellow");
       } else if (barType === "Percent") {
         let mousePos =
           Number(
@@ -202,7 +208,7 @@ function starMouseLeave(barType) {
           ) * barVars.boundRect[barType].width;
         document.getElementById(
           s
-        ).style.backgroundImage = `linear-gradient(90deg, goldenrod ${mousePos}px, white ${mousePos}px`;
+        ).children[0].style.backgroundImage = `linear-gradient(90deg, goldenrod ${mousePos}px, white ${mousePos}px`;
       }
     }
   });
@@ -224,26 +230,30 @@ function starMouseClick(e, barType) {
         barVars.userStarRating[barType] = 0.5;
         document
           .getElementById(barVars.currentStarId[barType])
-          .classList.remove("starYellow");
+          .children[0].classList.remove("starYellow");
         document
           .getElementById(barVars.currentStarId[barType])
-          .classList.add("starYellowHalf");
+          .children[0].classList.add("starYellowHalf");
       } else {
         barVars.boundRect.Half.isHalf = false;
         barVars.userStarRating[barType] = 1;
         document
           .getElementById(barVars.currentStarId[barType])
-          .classList.remove("starYellowHalf");
+          .children[0].classList.remove("starYellowHalf");
         document
           .getElementById(barVars.currentStarId[barType])
-          .classList.add("starYellow");
+          .children[0].classList.add("starYellow");
       }
+
       break;
 
     case "Percent":
-      barVars.userStarRating[barType] =
-        (e.clientX - barVars.boundRect[barType].left) /
-        barVars.boundRect[barType].width;
+      barVars.userStarRating[barType] = Number(
+        (
+          (e.clientX - barVars.boundRect[barType].left) /
+          barVars.boundRect[barType].width
+        ).toFixed(2)
+      );
 
       break;
   }
