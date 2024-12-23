@@ -2,38 +2,45 @@ const cc = console.log;
 
 //variables not related to users
 
-let barTypesAll = ["Full", "Half"];
+let barTypesAll = ["Full", "Half", "Percent"];
 
 //variables for individual starBars, allows for accessing them dynamically
 let barVars = {
   getStarBar: {
     Full: document.getElementById("starBarFull"),
     Half: document.getElementById("starBarHalf"),
+    Percent: document.getElementById("starBarPercent"),
   },
   getStarRatingText: {
     Full: document.getElementById("starRatingTextFull"),
     Half: document.getElementById("starRatingTextHalf"),
+    Percent: document.getElementById("starRatingTextPercent"),
   },
   //from mouseenter
   currentStarId: {
     Full: "",
     Half: "",
+    Percent: "",
   },
   userStarRating: {
     Full: 0,
     Half: 0,
+    Percent: 0,
   },
   starArray: {
     Full: [],
     Half: [],
+    Percent: [],
   },
-  // mouseX: {
-  //   Half: 0,
-  // },
+
   boundRect: {
     Half: {
       //true = is half, false = is full, null = not set yet
       isHalf: null,
+      left: null,
+      width: null,
+    },
+    Percent: {
       left: null,
       width: null,
     },
@@ -61,8 +68,8 @@ function createStarsSingleUser(barType) {
     }
   }
 }
-createStarsSingleUser("Full");
-createStarsSingleUser("Half");
+
+barTypesAll.map((s) => createStarsSingleUser(s));
 
 //ADD MOUSELEAVE TO ALL STARBARS
 barTypesAll.map((barType) => {
@@ -81,90 +88,123 @@ function starMouseEnter(e, barType) {
   );
 
   barVars.starArray[barType].map((s, i) => {
-    if (i < currentStarIndex) {
+    if (barType === "Percent") {
+      document.getElementById(s).style.backgroundImage = "none";
+    }
+    if (barType === "Half") {
       document.getElementById(s).classList.remove("starYellowHalf");
+    }
+    if (i < currentStarIndex) {
       document.getElementById(s).classList.add("starYellow");
     } else if (i > currentStarIndex) {
       document.getElementById(s).classList.remove("starYellow");
-      document.getElementById(s).classList.remove("starYellowHalf");
     }
   });
 
-  if (barType === "Full") {
-    document
-      .getElementById(barVars.currentStarId[barType])
-      .classList.add("starYellow");
-  } else if (barType === "Half") {
-    barVars.boundRect[barType].left = document
-      .getElementById(barVars.currentStarId[barType])
-      .getBoundingClientRect().left;
-    barVars.boundRect[barType].width = document
-      .getElementById(barVars.currentStarId[barType])
-      .getBoundingClientRect().width;
+  switch (barType) {
+    case "Full":
+      document
+        .getElementById(barVars.currentStarId[barType])
+        .classList.add("starYellow");
+      break;
+    case "Half":
+      barVars.boundRect[barType].left = document
+        .getElementById(barVars.currentStarId[barType])
+        .getBoundingClientRect().left;
+      barVars.boundRect[barType].width = document
+        .getElementById(barVars.currentStarId[barType])
+        .getBoundingClientRect().width;
 
-    document
-      .getElementById(barVars.currentStarId[barType])
-      .classList.remove("starYellow");
-    document
-      .getElementById(barVars.currentStarId[barType])
-      .classList.remove("starYellowHalf");
+      document
+        .getElementById(barVars.currentStarId[barType])
+        .classList.remove("starYellow");
+      document
+        .getElementById(barVars.currentStarId[barType])
+        .classList.remove("starYellowHalf");
+      break;
+    case "Percent":
+      barVars.boundRect[barType].left = document
+        .getElementById(barVars.currentStarId[barType])
+        .getBoundingClientRect().left;
+      barVars.boundRect[barType].width = document
+        .getElementById(barVars.currentStarId[barType])
+        .getBoundingClientRect().width;
+
+      document
+        .getElementById(barVars.currentStarId[barType])
+        .classList.remove("starYellow");
+      break;
   }
 }
 
 function starMousemove(e, barType) {
-  cc(e.clientX - barVars.boundRect[barType].left);
-  if (
-    e.clientX - barVars.boundRect[barType].left <=
-    barVars.boundRect[barType].width / 2
-  ) {
-    document
-      .getElementById(barVars.currentStarId[barType])
-      .classList.remove("starYellow");
-    document
-      .getElementById(barVars.currentStarId[barType])
-      .classList.add("starYellowHalf");
-  } else {
-    document
-      .getElementById(barVars.currentStarId[barType])
-      .classList.remove("starYellowHalf");
-    document
-      .getElementById(barVars.currentStarId[barType])
-      .classList.add("starYellow");
+  switch (barType) {
+    case "Half":
+      if (
+        e.clientX - barVars.boundRect[barType].left <=
+        barVars.boundRect[barType].width / 2
+      ) {
+        document
+          .getElementById(barVars.currentStarId[barType])
+          .classList.remove("starYellow");
+        document
+          .getElementById(barVars.currentStarId[barType])
+          .classList.add("starYellowHalf");
+      } else {
+        document
+          .getElementById(barVars.currentStarId[barType])
+          .classList.remove("starYellowHalf");
+        document
+          .getElementById(barVars.currentStarId[barType])
+          .classList.add("starYellow");
+      }
+      break;
+    case "Percent":
+      cc("client x " + e.clientX);
+      cc("star left " + barVars.boundRect[barType].left);
+      cc(`${e.clientX - barVars.boundRect[barType].left}px`);
+      document.getElementById(
+        barVars.currentStarId[barType]
+      ).style.backgroundImage = `linear-gradient(90deg, goldenrod ${
+        e.clientX - barVars.boundRect[barType].left
+      }px, white ${e.clientX - barVars.boundRect[barType].left}px`;
+
+      break;
   }
 }
 
 function starMouseLeave(barType) {
   barVars.starArray[barType].map((s, i) => {
+    if (barType === "Percent") {
+      document.getElementById(s).style.backgroundImage = "none";
+    }
+    if (barType === "Half") {
+      document.getElementById(s).classList.remove("starYellowHalf");
+    }
+
+    document.getElementById(s).classList.remove("starYellow");
+
     if (i + 1 < barVars.userStarRating[barType]) {
-      document.getElementById(s).classList.remove("starYellowHalf");
       document.getElementById(s).classList.add("starYellow");
-    } else if (i + 1 >= barVars.userStarRating[barType]) {
-      document.getElementById(s).classList.remove("starYellow");
-      document.getElementById(s).classList.remove("starYellowHalf");
     }
     if (i + 1 === Math.ceil(barVars.userStarRating[barType])) {
-      document.getElementById(s).classList.remove("starYellowHalf");
-      document.getElementById(s).classList.remove("starYellow");
-
-      switch (barVars.boundRect.Half.isHalf) {
-        case true:
-          document.getElementById(s).classList.add("starYellowHalf");
-          break;
-        case false:
-          document.getElementById(s).classList.add("starYellow");
-          break;
+      if (barType === "Half" && barVars.boundRect.Half.isHalf) {
+        document.getElementById(s).classList.add("starYellowHalf");
+      } else if (barType !== "Percent") {
+        document.getElementById(s).classList.add("starYellow");
+      } else if (barType === "Percent") {
+        let mousePos =
+          Number(
+            (
+              barVars.userStarRating[barType] -
+              Math.floor(barVars.userStarRating[barType])
+            ).toFixed(2)
+          ) * barVars.boundRect[barType].width;
+        document.getElementById(
+          s
+        ).style.backgroundImage = `linear-gradient(90deg, goldenrod ${mousePos}px, white ${mousePos}px`;
       }
     }
-
-    // if (i + 1 == barVars.userStarRating[barType]) {
-    //   if (barType === "Full") {
-    //     document.getElementById(s).classList.add("starYellow");
-    //   } else if (barType === "Half") {
-    //     barVars.boundRect.Half.isHalf
-    //       ? document.getElementById(s).classList.add("starYellowHalf")
-    //       : document.getElementById(s).classList.add("starYellow");
-    //   }
-    // }
   });
 }
 
@@ -199,6 +239,13 @@ function starMouseClick(e, barType) {
           .classList.add("starYellow");
       }
       break;
+
+    case "Percent":
+      barVars.userStarRating[barType] =
+        (e.clientX - barVars.boundRect[barType].left) /
+        barVars.boundRect[barType].width;
+
+      break;
   }
 
   barVars.userStarRating[barType] += barVars.starArray[barType].indexOf(
@@ -207,19 +254,4 @@ function starMouseClick(e, barType) {
 
   barVars.getStarRatingText[barType].innerText =
     barVars.userStarRating[barType];
-  cc([barType] + " UserStarRating:" + barVars.userStarRating[barType]);
-}
-
-//THE FOLLOWING FUNCTION JUST HOLDS CODE SNIPPETS FOR REFERENCE
-function refref() {
-  !getBtnFollow.contains(e.target) &&
-    getBtnInstagram.classList.contains("animSlideReveal1");
-
-  if (e.target !== this) {
-    // Get the ID of the clicked child element
-    const childId = e.target.id;
-    console.log("Clicked child ID:", childId);
-  }
-
-  getStarBarFull.children[5].style.backgroundColor = "green";
 }
