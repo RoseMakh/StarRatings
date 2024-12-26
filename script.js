@@ -221,9 +221,8 @@ function starMouseLeave(barType) {
   });
 }
 
-function starMouseClick(e, barType) {
+function makePopUp() {
   let newPop = document.createElement("DIV");
-  newPop.setAttribute("id", "popup1");
   document.getElementsByTagName("body")[0].append(newPop);
   newPop.innerText = "Thanks for rating!";
   newPop.classList.add("popup");
@@ -237,6 +236,10 @@ function starMouseClick(e, barType) {
   setTimeout(() => {
     newPop.remove();
   }, 1510);
+}
+
+function starMouseClick(e, barType) {
+  makePopUp();
 
   getCurrentStarChild = document.getElementById(barVars.currentStarId[barType])
     .children[0];
@@ -278,7 +281,7 @@ function starMouseClick(e, barType) {
         (
           (e.clientX - barVars.boundRect[barType].left) /
           barVars.boundRect[barType].width
-        ).toFixed(2)
+        ).toFixed(1)
       );
 
       break;
