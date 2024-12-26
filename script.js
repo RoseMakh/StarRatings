@@ -222,6 +222,22 @@ function starMouseLeave(barType) {
 }
 
 function starMouseClick(e, barType) {
+  let newPop = document.createElement("DIV");
+  newPop.setAttribute("id", "popup1");
+  document.getElementsByTagName("body")[0].append(newPop);
+  newPop.innerText = "Thanks for rating!";
+  newPop.classList.add("popup");
+  setTimeout(() => {
+    newPop.classList.add("popVisible");
+    newPop.classList.add("popMoved");
+  }, 10);
+  setTimeout(() => {
+    newPop.classList.remove("popVisible");
+  }, 1010);
+  setTimeout(() => {
+    newPop.remove();
+  }, 1510);
+
   getCurrentStarChild = document.getElementById(barVars.currentStarId[barType])
     .children[0];
 

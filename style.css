@@ -12,6 +12,7 @@
   --star-color-4: darkorchid;
   --star-color-5: indigo;
 
+  --element-background-primary: #958097;
   color: var(--dark-color);
 }
 
@@ -177,7 +178,7 @@ p {
 
 .starBar {
   width: fit-content;
-  background-color: #958097;
+  background-color: var(--element-background-primary);
   width: max-content;
   display: inline-flex;
   flex-direction: row;
@@ -189,4 +190,35 @@ p {
 .starBar > button {
   border-width: 0px;
   background-color: transparent;
+}
+
+.popup {
+  width: fit-content;
+  box-shadow: 0px 3px 5px gray;
+  border-radius: 10px;
+  padding: 10px 20px;
+  margin: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  background-color: var(--dark-color);
+  color: white;
+
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+}
+
+.popVisible {
+  opacity: 1;
+}
+
+.popMoved {
+  transform: translateY(-100px);
 }
