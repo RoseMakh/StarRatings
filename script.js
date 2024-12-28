@@ -4,6 +4,23 @@ let barTypesAll = ["Full", "Half", "Percent"];
 let getCurrentStarId; //used to keep code tidy by making it shorter where star ID (button) is accessed
 let getCurrentStarChild; //used to keep code tidy by making it shorter when star (button's child) is accessed
 
+//choose emojis from this array. saddest is index 0, happiest is the last index
+let emojiArr = [
+  "&#x1F62D;",
+  "&#x1F62B;",
+  "&#x1F613;",
+  "&#x1F612;",
+  "&#x1F613;",
+  "&#x1F641;",
+  "&#x1F610;",
+  "&#x1F615;",
+  "&#x1F642;",
+  "&#x1F604;",
+  "&#x1F601;",
+  "&#x1F606;",
+  "&#x1F929;",
+];
+
 //variables for individual starBars, allows for accessing them dynamically
 let barVars = {
   getStarBar: {
@@ -97,12 +114,18 @@ function starMouseEnter(e, barType) {
 
     if (barType === "Percent") {
       //remove gradient from percent stars
+      getCurrentStarChild.style.backgroundColor = "white";
       getCurrentStarChild.style.backgroundImage = "none";
     }
     if (barType === "Half") {
       getCurrentStarChild.classList.remove("starHalf-" + (i + 1));
     }
     if (i < currentStarIndex) {
+      if (barType === "Percent") {
+        getCurrentStarChild.style.backgroundColor = `var(--star-color-${
+          i + 1
+        })`;
+      }
       getCurrentStarChild.classList.add("starFull-" + (i + 1));
     } else if (i > currentStarIndex) {
       getCurrentStarChild.classList.remove("starFull-" + (i + 1));
@@ -170,6 +193,9 @@ function starMousemove(e, barType) {
       }
       break;
     case "Percent":
+      getCurrentStarId.children[0].style.backgroundColor = `var(--star-color-${
+        currentStarIndex + 1
+      })`;
       getCurrentStarId.children[0].style.backgroundImage = `linear-gradient(90deg, var(--star-color-${
         currentStarIndex + 1
       }) ${e.clientX - barVars.boundRect[barType].left}px, white ${
@@ -190,6 +216,7 @@ function starMouseLeave(barType) {
 
     if (barType === "Percent") {
       getCurrentStarChild.style.backgroundImage = "none";
+      getCurrentStarChild.style.backgroundColor = "white";
     }
     if (barType === "Half") {
       getCurrentStarChild.classList.remove("starHalf-" + (i + 1));
@@ -198,6 +225,11 @@ function starMouseLeave(barType) {
     getCurrentStarChild.classList.remove("starFull-" + (i + 1));
 
     if (i + 1 < barVars.userStarRating[barType]) {
+      if (barType === "Percent") {
+        getCurrentStarChild.style.backgroundColor = `var(--star-color-${
+          i + 1
+        })`;
+      }
       getCurrentStarChild.classList.add("starFull-" + (i + 1));
     }
     if (i + 1 === Math.ceil(barVars.userStarRating[barType])) {
@@ -213,6 +245,9 @@ function starMouseLeave(barType) {
               Math.floor(barVars.userStarRating[barType])
             ).toFixed(2)
           ) * barVars.boundRect[barType].width;
+        getCurrentStarChild.style.backgroundColor = `var(--star-color-${
+          i + 1
+        })`;
         getCurrentStarChild.style.backgroundImage = `linear-gradient(90deg, var(--star-color-${
           i + 1
         }) ${mousePos}px, white ${mousePos}px`;
@@ -221,10 +256,61 @@ function starMouseLeave(barType) {
   });
 }
 
-function makePopUp() {
+function chooseEmoji(barType) {
+  let rating = barVars.userStarRating[barType];
+
+  switch (true) {
+    case rating < 0.5:
+      return emojiArr[0];
+      break;
+    case rating == 0.5:
+      return emojiArr[1];
+      break;
+    case rating > 0.5 && rating < 1:
+      return emojiArr[2];
+      break;
+    case rating == 1:
+      return emojiArr[3];
+      break;
+    case rating > 1 && rating <= 1.5:
+      return emojiArr[4];
+      break;
+    case rating > 1.5 && rating <= 2:
+      return emojiArr[5];
+      break;
+    case rating > 2 && rating <= 2.5:
+      return emojiArr[6];
+      break;
+    case rating > 2.5 && rating <= 3:
+      return emojiArr[7];
+      break;
+    case rating > 3 && rating <= 3.5:
+      return emojiArr[8];
+      break;
+    case rating > 3.5 && rating <= 4:
+      return emojiArr[9];
+      break;
+    case rating > 4 && rating <= 4.5:
+      return emojiArr[10];
+      break;
+    case rating > 4.5 && rating < 5:
+      return emojiArr[11];
+      break;
+    case rating == 5:
+      return emojiArr[12];
+      break;
+  }
+}
+
+function makePopUp(barType) {
+  if (document.getElementById("pop1")) {
+    document.getElementById("pop1").remove();
+  }
+
   let newPop = document.createElement("DIV");
+  newPop.setAttribute("id", "pop1");
   document.getElementsByTagName("body")[0].append(newPop);
-  newPop.innerText = "Thanks for rating!";
+  newPop.innerHTML = chooseEmoji(barType);
   newPop.classList.add("popup");
   setTimeout(() => {
     newPop.classList.add("popVisible");
@@ -239,8 +325,6 @@ function makePopUp() {
 }
 
 function starMouseClick(e, barType) {
-  makePopUp();
-
   getCurrentStarChild = document.getElementById(barVars.currentStarId[barType])
     .children[0];
 
@@ -293,4 +377,6 @@ function starMouseClick(e, barType) {
 
   barVars.getStarRatingText[barType].innerText =
     barVars.userStarRating[barType];
+
+  makePopUp(barType);
 }
